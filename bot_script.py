@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler
 from bot_commands import *
 
 TOKEN = "915418186:AAEJgzEuaM5HDdF-6Wvwv8cV_lufn8oNJCM"
-PORT = int(os.environ.get('PORT', '8443'))
+PORT = 8443
 
 updater = Updater(TOKEN)
 
