@@ -25,6 +25,13 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'flask_boilerplate_main.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    PORT=8080
+
+    import logging
+    from logging import StreamHandler
+    file_handler = StreamHandler()
+    file_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(file_handler)
 
 
 config_by_name = dict(
