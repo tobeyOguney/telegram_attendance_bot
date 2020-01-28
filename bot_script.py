@@ -23,5 +23,5 @@ dp.add_handler(CommandHandler('endattendance', end_attendance))
 updater.start_webhook(listen="0.0.0.0",
                     port=PORT,
                     url_path=TOKEN)
-updater.bot.set_webhook("https://telegram-attendance-bot.herokuapp.com/" + TOKEN)
+updater.bot.set_webhook("https://telegram-attendance-bot.herokuapp.com:8443/" + TOKEN)
 updater.idle()
