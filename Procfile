@@ -1,0 +1,1 @@
+web: gunicorn application:application --log-level=debug & python botscript.py
