@@ -36,3 +36,4 @@ six==1.11.0
 SQLAlchemy==1.2.0
 Werkzeug
 python-telegram-bot
+requests
