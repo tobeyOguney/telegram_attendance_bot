@@ -1,7 +1,7 @@
 import requests
 
 
-BASE_URL = ''
+BASE_URL = 'http://0.0.0.0:41262'
 PASSWORD = "accountability"
 
 
