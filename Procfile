@@ -1,1 +1,1 @@
-web: gunicorn application:application --log-level=debug & python bot_script.py
+web: python bot_script.py & gunicorn application:application --log-level=debug
