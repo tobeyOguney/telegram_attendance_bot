@@ -1,5 +1,5 @@
 from .. import db
-from .user_attendance import UserAttendance
+from .user_attendance import CheckedInUserAttendance, CheckedOutUserAttendance
 
 class Attendance(db.Model):
     """
@@ -9,5 +9,9 @@ class Attendance(db.Model):
     
     timestamp = db.Column(db.DateTime, primary_key=True)
     purpose = db.Column(db.String, nullable=False)
+    alias = db.Column(db.String, nullable=False)
+    group_id = db.Column(db.String, nullable=False)
+    min_duration = db.Column(db.Integer, nullable=False)
     is_open = db.Column(db.Boolean, nullable=False)
-    users = db.relationship("User", secondary='user_attendance', backref="attendance")
+    checkedin_users = db.relationship("User", secondary='checkedin_user_attendance', back_populates="checkedin_attendance_sessions")
+    checkedout_users = db.relationship("User", secondary='checkedout_user_attendance', back_populates="checkedout_attendance_sessions")

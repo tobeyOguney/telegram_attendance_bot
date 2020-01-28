@@ -25,10 +25,16 @@ class AttendanceDto:
     api = Namespace('attendance', description='attendance related operations')
     attendance = api.model('attendance', {
         "is_open": fields.Boolean(required=True, description="attendance open status"),
-        "purpose": fields.String(required=True, description="purpose of attendance")
+        "purpose": fields.String(required=True, description="purpose of attendance"),
+        "group_id": fields.String(required=True, description="ID of corresponding Telegram group"),
+        "alias": fields.String(required=True, description="alias of the attendance"),
+        "min_duration": fields.Integer(required=True, description="minimum duration for checkout")
     })
     attendance_response = api.model('attendance_response', {
         "timestamp": fields.String(required=False, description="attendance timestamp"),
         "is_open": fields.Boolean(required=True, description="attendance open status"),
-        "purpose": fields.String(required=True, description="purpose of attendance")
+        "purpose": fields.String(required=True, description="purpose of attendance"),
+        "group_id": fields.String(required=True, description="ID of corresponding Telegram group"),
+        "alias": fields.String(required=True, description="alias of the attendance"),
+        "min_duration": fields.Integer(required=True, description="minimum duration for checkout")
     })

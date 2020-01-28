@@ -11,4 +11,5 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, nullable=False)
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
-    attendance_sessions = db.relationship("Attendance", secondary="user_attendance", backref="user")
+    checkedin_attendance_sessions = db.relationship("Attendance", secondary="checkedin_user_attendance", back_populates="checkedin_users")
+    checkedout_attendance_sessions = db.relationship("Attendance", secondary="checkedout_user_attendance", back_populates="checkedout_users")

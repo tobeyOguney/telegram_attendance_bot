@@ -3,8 +3,8 @@ from flask import request
 from flask_restplus import Resource
 
 from ..utils.dto import AttendanceDto, UserDto
-from ..services.attendance_service import (create_attendance, get_attendance, get_users,
-    remove_attendance, commit_attendance, close_attendance)
+from ..services.attendance_service import (create_attendance, get_attendance, get_checkedin_users,
+    get_checkedout_users, remove_attendance, checkin_attendance, checkout_attendance, close_attendance)
 api = AttendanceDto.api
 _attendance = AttendanceDto.attendance
 _attendance_response = AttendanceDto.attendance_response
@@ -24,51 +24,80 @@ class Attendance(Resource):
         return create_attendance(data=data)
 
 
-@api.route('/user/<timestamp>')
-@api.param('timestamp', 'The Attendance timestamp')
-class StudentAttendance(Resource):
-    @api.doc('List Of Commited Users')
+@api.route('/checkedin_users/<group_id>/<alias>')
+@api.param('group_id', 'The ID of the Telegram group attendance is taken')
+@api.param('alias', 'The alias of the attendance session')
+class CheckedInAttendance(Resource):
+    @api.doc('List Of Checked In Users')
     @api.marshal_list_with(_user)
-    def get(self, timestamp):
-        """List all commited users"""
-        return get_users(timestamp)
+    def get(self, group_id, alias):
+        """List all checked in users"""
+        return get_checkedin_users(group_id, alias)
 
 
-@api.route('/profile/<timestamp>')
-@api.param('timestamp', 'The Attendance timestamp')
+@api.route('/checkedout_users/<group_id>/<alias>')
+@api.param('group_id', 'The ID of the Telegram group attendance is taken')
+@api.param('alias', 'The alias of the attendance session')
+class CheckedOutAttendance(Resource):
+    @api.doc('List Of Checked Out Users')
+    @api.marshal_list_with(_user)
+    def get(self, group_id, alias):
+        """List all checked out users"""
+        return get_checkedout_users(group_id, alias)
+
+
+@api.route('/profile/<group_id>/<alias>')
+@api.param('group_id', 'The ID of the Telegram group attendance is taken')
+@api.param('alias', 'The alias of the attendance session')
 @api.response(404, 'Attendance not found.')
 class AttendanceProfile(Resource):
     @api.doc('get a attendance\'s profile')
     @api.marshal_with(_attendance_response)
-    def get(self, timestamp):
+    def get(self, group_id, alias):
         """get a attendance\'s profile given its identifier"""
-        attendance = get_attendance(timestamp)
+        attendance = get_attendance(group_id, alias)
         return attendance
 
     @api.doc('remove a attendance\'s profile')
-    def delete(self, timestamp):
+    def delete(self, group_id, alias):
         """removes a attendance's profile"""
-        return remove_attendance(timestamp)
+        return remove_attendance(group_id, alias)
 
 
-@api.route('/commit/<timestamp>')
-@api.param('timestamp', 'The Attendance timestamp')
+@api.route('/checkin/<group_id>/<alias>')
+@api.param('group_id', 'The ID of the Telegram group attendance is taken')
+@api.param('alias', 'The alias of the attendance session')
 @api.response(404, 'Attendance not found.')
-class CommitAttendanceSession(Resource):
-    @api.doc('commit to an attendance session')
+class CheckinAttendanceSession(Resource):
+    @api.doc('check into an attendance session')
     @api.expect(_user_id, validate=True)
-    def put(self, timestamp):
-        """commits to an attendance session"""
+    def put(self, group_id, alias):
+        """checks into an attendance session"""
         data = request.json
-        return commit_attendance(timestamp=timestamp, data=data)
+        return checkin_attendance(group_id, alias, data)
 
 
-@api.route('/close/<timestamp>')
-@api.param('timestamp', 'The Attendance timestamp')
+
+@api.route('/checkout/<group_id>/<alias>')
+@api.param('group_id', 'The ID of the Telegram group attendance is taken')
+@api.param('alias', 'The alias of the attendance session')
+@api.response(404, 'Attendance not found.')
+class CheckoutAttendanceSession(Resource):
+    @api.doc('check out of an attendance session')
+    @api.expect(_user_id, validate=True)
+    def put(self, group_id, alias):
+        """checks out of an attendance session"""
+        data = request.json
+        return checkout_attendance(group_id, alias, data)
+
+
+@api.route('/close/<group_id>/<alias>')
+@api.param('group_id', 'The ID of the Telegram group attendance is taken')
+@api.param('alias', 'The alias of the attendance session')
 @api.response(404, 'Attendance not found.')
 class CloseAttendanceSession(Resource):
     @api.doc('close an attendance session')
-    def put(self, timestamp):
+    def put(self, group_id, alias):
         """closes an attendance session"""
-        return close_attendance(timestamp)
+        return close_attendance(group_id, alias)
 
