@@ -8,7 +8,6 @@ class Attendance(db.Model):
     __tablename__ = "attendance"
     
     timestamp = db.Column(db.DateTime, primary_key=True)
-    purpose = db.Column(db.String, nullable=False)
     alias = db.Column(db.String, nullable=False)
     group_id = db.Column(db.String, nullable=False)
     min_duration = db.Column(db.Integer, nullable=False)
