@@ -17,7 +17,12 @@ def create_attendance(data):
             timestamp = datetime.datetime.utcnow()
         )
         save_changes(new_attendance)
-        return new_attendance, 201
+        response_object = {
+            'status': 'success',
+            'message': 'You have successfully created an attendance session with alias: "{alias}" in the "{group_name}" group.'format(**data).,
+            'alias': new_attendance.alias,
+        }
+        return response_object, 201
     else:
         response_object = {
             'status': 'fail',
