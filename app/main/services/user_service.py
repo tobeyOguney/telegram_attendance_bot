@@ -17,7 +17,7 @@ def create_user(data):
         save_changes(new_user)
         response_object = {
             'status': 'success',
-            'message': 'Successfully created.',
+            'message': 'You are now registered with Mento.',
             'telegram_id': new_user.telegram_id,
         }
         return response_object, 201
@@ -30,7 +30,7 @@ def create_user(data):
             save_changes(user)
             response_object = {
                 'status': 'success',
-                'message': 'Successfully upgraded to admin status.',
+                'message': 'You now have the admin priviledge.',
                 'telegram_id': new_user.telegram_id,
             }
             return response_object, 201
@@ -40,9 +40,9 @@ def create_user(data):
         save_changes(user)
         response_object = {
             'status': 'success',
-            'message': 'User details updated.',
+            'message': 'You have successfully updated your details.',
         }
-        return response_object, 409
+        return response_object, 201
 
 
 def get_all_users():
