@@ -103,7 +103,7 @@ class CheckinAttendanceSession(Resource):
 
 
 
-@api.route('/checkout/<group_id>/<alias>')
+@api.route('/checkout/<group_id>/<group_name>/<alias>')
 @api.param('group_id', 'The ID of the Telegram group attendance is taken')
 @api.param('group_name', 'The title of the Telegram group attendance is taken')
 @api.param('alias', 'The alias of the attendance session')
@@ -117,7 +117,7 @@ class CheckoutAttendanceSession(Resource):
         return checkout_attendance(group_id, group_name, alias, data)
 
 
-@api.route('/close/<group_id>/<alias>/<user_id>')
+@api.route('/close/<group_id>/<group_name>/<alias>/<user_id>')
 @api.param('group_id', 'The ID of the Telegram group attendance is taken')
 @api.param('group_name', 'The title of the Telegram group attendance is taken')
 @api.param('alias', 'The alias of the attendance session')
