@@ -18,7 +18,6 @@ class Attendance(Resource):
     @api.expect(_attendance, validate=True)
     @api.response(201, 'Attendance successfully created.')
     @api.doc('create a new attendance')
-    @api.marshal_with(_attendance_response)
     def post(self):
         """Creates a new Attendance """
         data = request.json
