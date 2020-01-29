@@ -8,21 +8,29 @@ from app.main.models.user import User
 
 def create_attendance(data):
     user = User.query.filter_by(telegram_id=data['user_id']).first()
+    attendance = Attendance.query.filter_by(alias = data['alias'], group_id = data['group_id']).first()
     if user and user.is_admin:
-        new_attendance = Attendance(
-            alias = data['alias'],
-            group_id = data['group_id'],
-            min_duration = data['min_duration'],
-            is_open = True,
-            timestamp = datetime.datetime.utcnow()
-        )
-        save_changes(new_attendance)
-        response_object = {
-            'status': 'success',
-            'message': 'You have successfully created an attendance session with alias: "{alias}" in the "{group_name}" group.'.format(**data),
-            'alias': new_attendance.alias,
-        }
-        return response_object, 201
+        if not attendance:
+            new_attendance = Attendance(
+                alias = data['alias'],
+                group_id = data['group_id'],
+                min_duration = data['min_duration'],
+                is_open = True,
+                timestamp = datetime.datetime.utcnow()
+            )
+            save_changes(new_attendance)
+            response_object = {
+                'status': 'success',
+                'message': 'You have successfully created an attendance session with alias: "{alias}" in the "{group_name}" group.'.format(**data),
+                'alias': new_attendance.alias,
+            }
+            return response_object, 201
+        else:
+            response_object = {
+                'status': 'fail',
+                'message': 'Sorry, there is a already recorded attendance session with the alias: "{alias}" in the "{group_name}" group.'.format(**data),
+            }
+            return response_object, 409
     else:
         if not user:
             response_object = {
