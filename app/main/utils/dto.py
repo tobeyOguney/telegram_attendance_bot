@@ -24,6 +24,7 @@ class UserDto:
 class AttendanceDto:
     api = Namespace('attendance', description='attendance related operations')
     attendance = api.model('attendance', {
+        "user_id": fields.String(required=True, description="Telegram ID of the user making the request"),
         "is_open": fields.Boolean(required=True, description="attendance open status"),
         "group_id": fields.String(required=True, description="ID of corresponding Telegram group"),
         "alias": fields.String(required=True, description="alias of the attendance"),

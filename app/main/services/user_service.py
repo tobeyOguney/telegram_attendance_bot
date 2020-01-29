@@ -22,9 +22,25 @@ def create_user(data):
         }
         return response_object, 201
     else:
+        if not user.is_admin and data["is_admin"]:
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
+            user.registration_id = data['registration_id']
+            user.is_admin = data['is_admin']
+            save_changes(user)
+            response_object = {
+                'status': 'success',
+                'message': 'Successfully upgraded to admin status.',
+                'telegram_id': new_user.telegram_id,
+            }
+            return response_object, 201
+        user.first_name = data['first_name']
+        user.last_name = data['last_name']
+        user.registration_id = data['registration_id']
+        save_changes(user)
         response_object = {
-            'status': 'fail',
-            'message': 'User already exists.',
+            'status': 'success',
+            'message': 'User details updated.',
         }
         return response_object, 409
 
