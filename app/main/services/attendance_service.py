@@ -21,14 +21,14 @@ def create_attendance(data):
             save_changes(new_attendance)
             response_object = {
                 'status': 'success',
-                'message': 'You have successfully created an attendance session with alias: "{alias}" in the "{group_name}" group.'.format(**data),
+                'message': 'You have successfully created an attendance session with alias: *{alias}* in the *{group_name}* group.'.format(**data),
                 'alias': new_attendance.alias,
             }
             return response_object, 201
         else:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry, there is a already recorded attendance session with the alias: "{alias}" in the "{group_name}" group.'.format(**data),
+                'message': 'Sorry, there is a already recorded attendance session with the alias: *{alias}* in the *{group_name}* group.'.format(**data),
             }
             return response_object, 409
     else:
@@ -40,8 +40,8 @@ def create_attendance(data):
             return response_object, 409
         else:
             response_object = {
-                'status': 'fail',
-                'message': 'Sorry, you need the admin priviledge to create an attendance session.'
+                'status': 'success',
+                    'message': 'You have successfully closed "{}" attendance session in the "{}" group.'.format(attendance.alias, group_name)
             }
             return response_object, 409
 
@@ -53,7 +53,7 @@ def get_attendance(group_id, group_name, alias):
     else:
         response_object = {
             'status': 'fail',
-            'message': 'Sorry, there is no recorded attendance with alias: "{}" in the "{}" group. Please check the spelling and try again.'.format(alias, group_name)
+            'message': 'Sorry, there is no recorded attendance with alias: *{}* in the *{}* group. Please check the spelling and try again.'.format(alias, group_name)
         }
         return response_object, 409
 
@@ -67,7 +67,7 @@ def get_checkedin_users(group_id, group_name, alias, user_id):
         else:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry, there is no recorded attendance with alias: "{}" in the "{}" group. Please check the spelling and try again.'.format(alias, group_name)
+                'message': 'Sorry, there is no recorded attendance with alias: *{}* in the *{}* group. Please check the spelling and try again.'.format(alias, group_name)
             }
             return response_object, 409
     else:
@@ -87,7 +87,7 @@ def get_checkedout_users(group_id, group_name, alias, user_id):
         else:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry, there is no recorded attendance with alias: "{}" in the "{}" group. Please check the spelling and try again.'.format(alias, group_name)
+                'message': 'Sorry, there is no recorded attendance with alias: *{}* in the *{}* group. Please check the spelling and try again.'.format(alias, group_name)
             }
             return response_object, 409
     else:
@@ -103,17 +103,24 @@ def close_attendance(group_id, group_name, alias, user_id):
     if user.is_admin:
         attendance = Attendance.query.filter_by(group_id=group_id, alias=alias).first()
         if attendance:
-            attendance.is_open = False
-            save_changes(attendance)
-            response_object = {
-                'status': 'success',
-                'message': 'You have successfully closed "{}" attendance session in the "{}" group.'.format(attendance.alias, group_name)
-            }
-            return response_object, 201
+            if attendance.is_open:
+                attendance.is_open = False
+                save_changes(attendance)
+                response_object = {
+                    'status': 'success',
+                    'message': 'You have successfully closed *{}* attendance session in the *{}* group.'.format(attendance.alias, group_name)
+                }
+                return response_object, 201
+            else:
+                response_object = {
+                    'status': 'fail',
+                    'message': "Sorry, this attendance session is already closed."
+                }
+                return response_object, 201
         else:
             response_object = {
                     'status': 'fail',
-                    'message': 'Sorry, there is no recorded attendance with alias: "{}" in the "{}" group. Please check the spelling and try again.'.format(alias, group_name)
+                    'message': 'Sorry, there is no recorded attendance with alias: *{}* in the *{}* group. Please check the spelling and try again.'.format(alias, group_name)
             }
             return response_object, 409
     else:
@@ -133,7 +140,7 @@ def checkin_attendance(group_id, group_name, alias, data):
             save_changes(attendance)
             response_object = {
                 'status': 'success',
-                'message': 'You have successfully checked into the "{}" attendance session in the "{}" group.'.format(attendance.alias, group_name)
+                'message': 'You have successfully checked into the *{}* attendance session in the *{}* group.'.format(attendance.alias, group_name)
             }
             return response_object, 201
         else:
@@ -146,13 +153,13 @@ def checkin_attendance(group_id, group_name, alias, data):
         if not attendance:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry, there is no recorded attendance with alias: "{}" in the "{}" group. Please check the spelling and try again.'.format(alias, group_name)
+                'message': 'Sorry, there is no recorded attendance with alias: *{}* in the *{}* group. Please check the spelling and try again.'.format(alias, group_name)
             }
             return response_object, 409
         else:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry, the "{}" attendance session in the "{}" group has been closed.'.format(alias, group_name)
+                'message': 'Sorry, the *{}* attendance session in the *{}* group has been closed.'.format(alias, group_name)
             }
             return response_object, 409
 
@@ -165,7 +172,7 @@ def checkout_attendance(group_id, group_name, alias, data):
         if not user_attendance:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry, you need to check into the "{}" attendance session in the "{}" group to do this.'.format(attendance.alias, group_name),
+                'message': 'Sorry, you need to check into the *{}* attendance session in the *{}* group to do this.'.format(attendance.alias, group_name),
             }
             return response_object, 409
         if user:
@@ -175,13 +182,13 @@ def checkout_attendance(group_id, group_name, alias, data):
                 save_changes(attendance)
                 response_object = {
                     'status': 'success',
-                    'message': 'You have successfully checked out of the "{}" attendance session in the "{}" group.'.format(attendance.alias, group_name)
+                    'message': 'You have successfully checked out of the *{}* attendance session in the *{}* group.'.format(attendance.alias, group_name)
                 }
                 return response_object, 201
             else:
                 response_object = {
                     'status': 'fail',
-                    'message': 'Sorry, you still have {} minutes left to check out of the "{}" attendance session on the "{}" group.'.format(attendance.min_duration - time_spent//60, attendance.alias, group_name),
+                    'message': 'Sorry, this attendance session is already closed.'
                 }
                 return response_object, 409
         else:
@@ -194,13 +201,13 @@ def checkout_attendance(group_id, group_name, alias, data):
         if not attendance:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry, there is no recorded attendance with alias: "{}" in the "{}" group. Please check the spelling and try again.'.format(alias, group_name)
+                'message': 'Sorry, there is no recorded attendance with alias: *{}* in the *{}* group. Please check the spelling and try again.'.format(alias, group_name)
             }
             return response_object, 409
         else:
             response_object = {
                 'status': 'fail',
-                'message': 'Sorry, the "{}" attendance session in the "{}" group has been closed.'.format(alias, group_name)
+                'message': 'Sorry, the *{}* attendance session in the *{}* group has been closed.'.format(alias, group_name)
             }
             return response_object, 409
 
@@ -212,13 +219,13 @@ def remove_attendance(group_id, group_name, alias):
         db.session.commit()
         response_object = {
             'status': 'success',
-            'message': 'You have successfully removed the attendance with alias: "{}" in the "{}" group.'
+            'message': 'You have successfully removed the attendance with alias: *{}* in the *{}* group.'
         }
         return response_object, 201
     else:
         response_object = {
             'status': 'fail',
-            'message': 'Sorry, there is no recorded attendance with alias: "{}" in the "{}" group. Please check the spelling and try again.'.format(alias, group_name)
+            'message': 'Sorry, there is no recorded attendance with alias: *{}* in the *{}* group. Please check the spelling and try again.'.format(alias, group_name)
         }
         return response_object, 409
 
