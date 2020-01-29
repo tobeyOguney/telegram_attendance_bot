@@ -8,7 +8,7 @@ from app.main.models.user import User
 
 def create_attendance(data):
     user = User.query.filter_by(telegram_id=data['user_id']).first()
-    if user.is_admin:
+    if user and user.is_admin:
         new_attendance = Attendance(
             alias = data['alias'],
             group_id = data['group_id'],
@@ -24,11 +24,18 @@ def create_attendance(data):
         }
         return response_object, 201
     else:
-        response_object = {
-            'status': 'fail',
-            'message': 'Sorry, you need the admin priviledge to create an attendance session.'
-        }
-        return response_object, 409
+        if not user:
+            response_object = {
+                'status': 'fail',
+                'message': 'Sorry, you need to register with Mento before you get to create an attendance session. Type "mento help" for further information',
+            }
+            return response_object, 409
+        else:
+            response_object = {
+                'status': 'fail',
+                'message': 'Sorry, you need the admin priviledge to create an attendance session.'
+            }
+            return response_object, 409
 
 
 def get_attendance(group_id, group_name, alias):
