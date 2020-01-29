@@ -31,7 +31,7 @@ def create_user(data):
             response_object = {
                 'status': 'success',
                 'message': 'You now have the admin priviledge.',
-                'telegram_id': new_user.telegram_id,
+                'telegram_id': user.telegram_id,
             }
             return response_object, 201
         user.first_name = data['first_name']
