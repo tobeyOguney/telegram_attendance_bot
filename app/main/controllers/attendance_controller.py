@@ -1,3 +1,4 @@
+import flask_excel
 
 from flask import request
 from flask_restplus import Resource
@@ -33,6 +34,18 @@ class CheckedInAttendance(Resource):
     def get(self, group_id, alias):
         """List all checked in users"""
         return get_checkedin_users(group_id, alias)
+
+
+@api.route('/download/<group_id>/<alias>')
+@api.param('group_id', 'The ID of the Telegram group attendance is taken')
+@api.param('alias', 'The alias of the attendance session')
+class DownloadAttendance(Resource):
+    @api.doc('Download User Attendance')
+    def get(self, group_id, alias):
+        """Download user attendance"""
+        column_names = ['registration_id', 'first_name', 'last_name']
+        return flask_excel.make_response_from_query_sets(get_checkedout_users(group_id, alias)[0], column_names, "xlsx",
+                                                        file_name="{}_attendance.xlsx".format(alias))
 
 
 @api.route('/checkedout_users/<group_id>/<alias>')

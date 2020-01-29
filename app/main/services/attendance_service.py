@@ -103,6 +103,12 @@ def checkout_attendance(group_id, alias, data):
     if attendance and attendance.is_open:
         user = User.query.filter_by(telegram_id=data['telegram_id']).first()
         user_attendance = CheckedInUserAttendance.query.filter_by(user_id=data['telegram_id']).first()
+        if not user_attendance:
+            response_object = {
+                'status': 'fail',
+                'message': 'You have not checked in.',
+            }
+            return response_object, 409
         if user:
             time_spent = (datetime.datetime.utcnow() - user_attendance.timestamp).seconds
             if time_spent >= attendance.min_duration*60:
@@ -150,6 +156,11 @@ def remove_attendance(group_id, alias):
         }
         return response_object, 409
 
+
+def collate_attendance(group_id, alias):
+    users = [[user.registration_id, user.first_name, user.last_name] for user in get_checkedout_users(group_id, alias)]
+    users = [['REGISTRATION_ID', 'FIRST NAME', 'LAST NAME']].extend(users)
+    return excel.make_response_from_array(users, 'xlsx')
 
 def save_changes(data):
     db.session.add(data)
