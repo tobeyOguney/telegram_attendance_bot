@@ -1,16 +1,7 @@
 import os
 
-
-# postgres_params = {
-#     'NAME': os.environ['RDS_DB_NAME'],
-#     'USER': os.environ['RDS_USERNAME'],
-#     'PASSWORD': os.environ['RDS_PASSWORD'],
-#     'HOST': os.environ['RDS_HOSTNAME'],
-#     'PORT': os.environ['RDS_PORT'],
-# }
-
 # uncomment the line below for postgres database url from environment variable
-# postgres_local_base = "postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{NAME}".format(**postgres_params)
+postgres_local_base = 'postgres://pmugszllgbknve:63a9d53d96975aaf26dabd40910ecd7e01cccd2d3bb21217b33ce3f9be2e663b@ec2-3-214-53-225.compute-1.amazonaws.com:5432/dd7v111bie2hh9'
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -21,11 +12,9 @@ class Config:
 
 class DevelopmentConfig(Config):
     # uncomment the line below to use postgres
-    # SQLALCHEMY_DATABASE_URI = postgres_local_base
+    SQLALCHEMY_DATABASE_URI = postgres_local_base
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'flask_boilerplate_main.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    PORT=8080
 
 
 config_by_name = dict(
